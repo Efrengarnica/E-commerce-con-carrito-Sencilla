@@ -1,24 +1,42 @@
 const divProductos = document.getElementById("listaProductos");
 const divCarrito = document.getElementById("carrito");
 const totalCarrito = document.getElementById("totalCarrito");
+const divfiltros = document.getElementById("fila-filtros");
 let productos = null;
 let productosDiccionarioMap = null;
 let carrito = new Map();
+let arregloCategorias = null;
 
 async function obtenerProductos() {
     try {
-      const response = await fetch('https://fakestoreapi.com/products'); 
-      if (!response.ok) {
-        throw new Error('Error en la solicitud: ' + response.status);
+      const responseProductos = await fetch('https://fakestoreapi.com/products'); 
+      if (!responseProductos.ok) {
+        throw new Error('Error en la solicitud de productos: ' + responseProductos.status);
       }
-      productos = await response.json(); 
+      productos = await responseProductos.json(); 
       productosDiccionarioMap=renderizarProductos(productos);
+
+      const responseCategorias = await fetch('https://fakestoreapi.com/products/categories');
+      if(!responseCategorias.ok) {
+        throw new Error('Error en la solicitud de categorías: ' + responseCategorias.status);
+      }
+      arregloCategorias = await responseCategorias.json();
+      renderizarCategorias(arregloCategorias);
+
     } catch (error) {
       console.error('Hubo un problema con la petición:', error);
     }
 }
 
 obtenerProductos(); 
+
+function renderizarCategorias(arreglo){
+    arreglo.forEach(categoria => {
+        divfiltros.insertAdjacentHTML("beforeend", `
+                            <button class="categorias" type="button">${categoria}</button>
+            `)
+    });
+}
 
 function renderizarProductos(arreglo) {
     const productosDiMap= new Map();
@@ -111,7 +129,7 @@ function renderizarTotalCarrito() {
                 </div>
             </div>
             <div class="totalCarrito-fila-boton">
-                <button type="button" class ="boton-agregar-carrito">Tramitar pedido</button>
+                <button type="button" class ="boton-pagar-carrito">Tramitar pedido</button>
             </div>
         `)
     } else {
