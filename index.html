@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Esta página es una representación de una pequeña tienda en linea, con sus productos y un carrito de compras." />
+    <meta name="keywords" content="App web, html, css, JS." />
+    <meta name="author" content="Efren Garnica Palacios" /> 
+    <meta name="language" content="Spanish" />
+    <title> Productos y Carrito de Compras </title>
+    <link rel="stylesheet" href="./carrito.css">
+    <link rel="icon" href="./assets/icons8-carrito-de-compras-16.png" type="image/png" sizes="16x16">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="lado-productos">
+            <div class="fila-titulo-portada">
+                <h1>Explora nuestros productos</h1>
+                <img src="./assets/1366_2000.jpg" alt="Promoción" class="imagen-portada">
+            </div>
+            <div class="tarjetas-de-productos" id="listaProductos">
+                <div class="tarjeta" style="visibility: hidden;">
+                    <img src="./assets/OIP (5).jpg" alt="Chamarra" class="imagen-tarjeta">
+                    <h2>Producto Uno</h2>
+                    <h3>$ 100</h3>
+                    <h3>Chamarra</h3>
+                    <p>Muy flexible, recomendada para cuando hace frio.</p>
+                </div>
+            </div>
+        </div>
+        <div class="lado-carrito">
+            <h1>Carrito de compras</h1>
+            <div id="carrito">
+            </div>
+            <div id="totalCarrito">
+            </div>
+        </div>
+    </div>
+    <script src="./carrito.js"></script>
+</body>
+</html>
