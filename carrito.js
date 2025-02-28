@@ -4,12 +4,13 @@ const totalCarrito = document.getElementById("totalCarrito");
 const divfiltros = document.getElementById("fila-filtros");
 const divLadoCarrito = document.getElementById("id-lado-carrito");
 const inputDiv = document.getElementById("search");
+const divLadoProductos = document.getElementById("id-lado-productos");
 
-let productos = null;
-let productosDiccionarioMap = null;
+let productos = null; 
+let productosDiccionarioMap = null; 
 let carrito = new Map();
 let arregloCategorias = null;
-let productosOrdenadosPorCategoria = new Map();
+let productosOrdenadosPorCategoria = new Map(); 
 
 //Esta función async trae los productos de una Api, los almacena en distintos tipos de datos para nuestra conveniencia y renderiza los primeros valores en la página web.
 async function obtenerProductos() {
@@ -22,32 +23,32 @@ async function obtenerProductos() {
       //Renderiza y regresa los productos ordenados por su id, se guardan en un map().
       productosDiccionarioMap=renderizarProductos(productos);
       //Ordena los productos por medio de su categoria y los guarda en un map.
-      ordenarProductosPorCategoria();
+      ordenarProductosPorCategoria(productos);
 
       const responseCategorias = await fetch('https://fakestoreapi.com/products/categories');
       if(!responseCategorias.ok) {
         throw new Error('Error en la solicitud de categorías: ' + responseCategorias.status);
       }
       arregloCategorias = await responseCategorias.json();
-      //Renderiza los botones de categorías
+      //Renderiza los botones de categorías.
       renderizarCategorias(arregloCategorias);
 
     } catch (error) {
       console.error('Hubo un problema con la petición:', error);
     }
-}//obtenerProductos
+}//obtenerProductos()
 
-//Pone en marcha la función async
+//Pone en marcha la función async.
 obtenerProductos(); 
 
 function renderizarCategorias(arreglo) {
     arreglo.push("all");
     arreglo.forEach(categoria => {
         divfiltros.insertAdjacentHTML("beforeend", `  
-                            <button class="categorias" type="button" onClick="presentarProductosAplicandoCategoria(\`${categoria}\`)">${categoria}</button>
+                            <button class="categorias" type="button" data-categoria = "${categoria}">${categoria}</button>
             `)
     });
-}//renderizarCategorias
+}//renderizarCategorias()
 
 function renderizarProductos(arreglo) {
     const productosDiMap= new Map();
@@ -57,7 +58,7 @@ function renderizarProductos(arreglo) {
         productosDiMap.set(element.id, element);
     });
     return productosDiMap;
-}//renderizarProductos
+}//renderizarProductos()
 
 function crearTarjeta(imagen, titulo, precio, categoria, id) {
     const tarjeta = `
@@ -66,13 +67,68 @@ function crearTarjeta(imagen, titulo, precio, categoria, id) {
             <h2 class="titulo-tarjeta">${titulo}</h2>
             <h3>MXN ${precio}</h3>
             <h3 class = "categoria-tarjeta">${categoria}</h3>
-            <button type="button" id="${id}" onclick="modificarCarrito(${id})" class="boton-agregar-carrito">Agregar a carrito</button>
+            <button type="button" id="${id}" class="boton-agregar-carrito">Agregar a carrito</button>
         </div>
     `
     return tarjeta;
-}//crearTarjeta
+}//crearTarjeta()
 
-//Funcion que se ocupará para sumar o restar elementos de mi carrito de compra
+//Maneja todos los botones del lado de productos.
+divLadoProductos.addEventListener("click", function(event){
+    event.preventDefault();
+    //Esto maneja qué hacer cuando se le de click en los botones de Categorias.
+    if(event.target.matches(".categorias")){
+        const categoria = event.target.dataset.categoria;
+        presentarProductosAplicandoCategoria(categoria);
+        return;
+    }
+    //Esto maneja qué hacer cuando se le de click en los botones de Agregar a carrito.
+    if(event.target.matches(".boton-agregar-carrito")){
+        const idProducto = Number(event.target.id);
+        modificarCarrito(idProducto);
+        return;
+    }
+});
+
+//Maneja qué hacer cuando se le da clik en el input de Búsqueda.
+//No se agrega arriba ya que es otro tipo de EventListener.
+//Esto es algo nuevo que aprendí, hay un addEventListener "input" que cada vez que el usuario cambia el valor del input se ejecuta lo que hay dentro.
+inputDiv.addEventListener("input", function(event){
+    const query = event.target.value.toLowerCase();  
+    const resultados = productos.filter(producto => producto.title.toLowerCase().includes(query));
+    buscarMedianteBuscador(resultados);
+});
+
+//Maneja todos los botones del lado de carrito.
+divLadoCarrito.addEventListener("click", function(event){
+    event.preventDefault();
+    //Esto maneja qué hacer cuando se presiona el boton de sumar o restar del carrito.
+    const botonModificar = event.target.closest(".botones-carrito");
+    if(botonModificar){
+        const operacionAHacer = botonModificar.dataset.operacion;
+        const idProducto = Number(botonModificar.dataset.id);
+        if(operacionAHacer) {
+            modificarCarrito(idProducto,operacionAHacer);
+        }else {
+            modificarCarrito(idProducto);
+        }
+        return;
+    }
+    //Esto maneja qué hacer cuando se presione el boton borrar del carrito.
+    const botonEliminarDeCarro = event.target.closest(".botones-carrito-eliminar");
+    if(botonEliminarDeCarro) {
+        const idProducto = Number(botonEliminarDeCarro.dataset.id);
+        eliminarElementoCarrito(idProducto);
+        return;
+    }
+    //Esto maneja qué hacer cuando se presione el boton Realizar compra.
+    if(event.target.matches("#idBotonRealizarCompra")) {
+        realizarCompra();
+        return;
+    }
+});
+
+//Funcion que se ocupará para sumar o restar elementos de mi carrito de compra.
 function modificarCarrito(id, operacion = "suma") {
     if(operacion === "suma"){
         if (carrito.has(id)) {
@@ -88,14 +144,14 @@ function modificarCarrito(id, operacion = "suma") {
         }     
     }
     renderizarCarrito();
-}//modificarCarrito
+}//modificarCarrito()
 
 function eliminarElementoCarrito(id) {
     carrito.delete(id);
     renderizarCarrito();
-}//eliminarElementoCarrito
+}//eliminarElementoCarrito()
 
-//Solo se pone en marcha cuando se empieza a modificar el carrito
+//Solo se pone en marcha cuando se empieza a modificar el carrito.
 function renderizarCarrito() {
     divCarrito.innerHTML = "";
     if(carrito.size === 0){
@@ -121,9 +177,9 @@ function renderizarCarrito() {
                                     <p class ="texto-carrito">${valor.cantidadProducto} pz</p>
                                 </div>
                                 <div class="fila-carrito-columna-texto-abajo">
-                                    <button type="button" onclick="modificarCarrito(${valor.id}, 'resta')" class="botones-carrito"><svg class="iconos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg></button>
-                                    <button type="button" onclick="modificarCarrito(${valor.id})" class="botones-carrito"><svg class="iconos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg></button>
-                                    <button type="button" onclick="eliminarElementoCarrito(${valor.id})" class="botones-carrito"><svg class="iconos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button>
+                                    <button type="button" data-operacion="resta" data-id="${valor.id}" class="botones-carrito"><svg class="iconos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg></button>
+                                    <button type="button" data-id="${valor.id}" class="botones-carrito"><svg class="iconos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg></button>
+                                    <button type="button" data-id="${valor.id}" class="botones-carrito-eliminar"><svg class="iconos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button>
                                 </div>
                             </div>
                         </div>
@@ -132,7 +188,7 @@ function renderizarCarrito() {
         });
     }
     renderizarTotalCarrito();
-}//renderizarCarrito
+}//renderizarCarrito()
 
 //Se pone en marcha cada vez que se renderiza el carrito.
 function renderizarTotalCarrito() {
@@ -154,17 +210,16 @@ function renderizarTotalCarrito() {
                 </div>
             </div>
             <div class="totalCarrito-fila-boton">
-                <button type="button" class ="boton-pagar-carrito" id="idBotonRealizarCompra" onClick="realizarCompra()">Realizar compra</button>
+                <button type="button" class ="boton-pagar-carrito" id="idBotonRealizarCompra">Realizar compra</button>
             </div>
         `);
     } else {
         totalCarrito.innerHTML = "";
     }
-}//renderizarTotalCarrito
+}//renderizarTotalCarrito()
 
-//Debes de tener cuidado aquí ya que estás usando un arreglo que puede no llegar a existir, deberias de crear la función y que esta reciba un arreglo y después mandarla a llamar
 //Esta función me ayuda a crear un map, que servirá para buscar de manera mas eficiente los productos por su categoria.
-function ordenarProductosPorCategoria(){
+function ordenarProductosPorCategoria(productos){  
     productos.forEach(producto => {
         if(productosOrdenadosPorCategoria.has(producto.category)){
             productosOrdenadosPorCategoria.get(producto.category).push(producto);
@@ -172,7 +227,7 @@ function ordenarProductosPorCategoria(){
             productosOrdenadosPorCategoria.set(producto.category,[producto]);
         }
     });
-}//ordenarProductosPorCategoria
+}//ordenarProductosPorCategoria()
 
 //Mediante una categoria y mi map busco los objetos que tengan esa categoria de manera eficiente.
 function presentarProductosAplicandoCategoria(categoria) {
@@ -203,9 +258,9 @@ function presentarProductosAplicandoCategoria(categoria) {
             divProductos.insertAdjacentHTML("afterbegin",tarjeta);
         });
     }
-}//presentarProductosAplicandoCategoria
+}//presentarProductosAplicandoCategoria()
 
-//Función que ayuda a presentar un mensaje al usuario una vez que confirma su compra
+//Función que ayuda a presentar un mensaje al usuario una vez que confirma su compra.
 function realizarCompra() {
     divCarrito.innerHTML="";
     totalCarrito.innerHTML="";
@@ -218,7 +273,7 @@ function realizarCompra() {
         </div>
     `
     divCarrito.insertAdjacentHTML("beforeend",compraRealizada);
-}//realizarCompra
+}//realizarCompra()
 
 //Funcion NO eficiente para crear un buscador, solo se buscan similitudes mediante el title.
 function buscarMedianteBuscador(arregloResultadoBusqueda) {
@@ -239,16 +294,9 @@ function buscarMedianteBuscador(arregloResultadoBusqueda) {
                 <p>Muy flexible, recomendada para cuando hace frio.</p>
             </div>
     `
-    divProductos.insertAdjacentHTML("afterbegin",tarjetaRelleno);
+    divProductos.insertAdjacentHTML("afterbegin", tarjetaRelleno);
     arregloResultadoBusqueda.forEach(producto => {
         const tarjeta = crearTarjeta(producto.image, producto.title, producto.price, producto.category, producto.id);
         divProductos.insertAdjacentHTML("afterbegin",tarjeta);
     });
-}//buscarMedianteBuscador
-
-//Esto es algo nuevo que aprendí, hay un addEventListener "input" que cada vez que el usuario cambia el valor del input se ejecuta lo que hay dentro.
-inputDiv.addEventListener("input", function(event){
-    const query = event.target.value.toLowerCase();  
-    const resultados = productos.filter(producto => producto.title.toLowerCase().includes(query));
-    buscarMedianteBuscador(resultados);
-    });
+}//buscarMedianteBuscador()

@@ -48,11 +48,12 @@ p {
     position: fixed;      
     top: 0;
     right: 0;
-    height: 100vh;  
+    height: 85vh;
     overflow-y: auto; 
     display: flex;
     flex-direction: column;
     gap: 40px;
+    margin-bottom: 10px;
 }
 
 .fila-titulo-portada {
@@ -135,7 +136,8 @@ p {
     display: flex;
     flex-direction: column;
     gap: 35px;
-    min-height: 600px;
+    height: auto;
+    min-height: 400px;
     margin: 10px;
 }
 
@@ -150,6 +152,7 @@ p {
     display: flex;
     flex-direction: row;
     height: 85px;
+    min-height: 85px;
     overflow: hidden;
 }
 
@@ -260,22 +263,38 @@ p {
     border-radius: 50%;
 }
 
+.botones-carrito-eliminar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(197, 197, 197);
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+}
+
 .iconos {
     width: 10px;
     height: 10px;
 }
 
 #totalCarrito {
-    position: sticky; 
-    bottom: 0; 
-    width: 100%;
-    height: 150px;
+    position: fixed; 
+    z-index: 100;
+    bottom:0px; 
+    right: 0px;
+    width: 30%;
+    height: 80px;
     background-color: white;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     box-sizing: border-box;
-    padding-top: 10px;
     padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .totalCarrito-fila-precio {
@@ -305,13 +324,13 @@ p {
 }
 
 .carrito-icon {
-    width: 30px;
-    height: 35px;
+    width: 32px;
+    height: 30px;
 }
 
 .carrito-icon-exito {
     fill: rgb(69, 199, 102);
-    width: 30px;
+    width: 32px;
     height: 35px;
 }
 
