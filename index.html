@@ -8,14 +8,14 @@
     <meta name="author" content="Efren Garnica Palacios" /> 
     <meta name="language" content="Spanish" />
     <title> Productos y Carrito de Compras </title>
-    <link rel="stylesheet" href="./carrito.css">
+    <link rel="stylesheet" href="./productos.css">
     <link rel="icon" href="./assets/ecommerce-house-svgrepo-com.svg" type="image/svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="container-id">
         <div class="lado-productos">
             <div class="fila-titulo-portada">
                 <div class="imagen-portada">
@@ -30,30 +30,10 @@
             </div>
             <div id="fila-filtros">
             </div>
-            <div class="tarjetas-de-productos" id="listaProductos">
-                <div class="tarjeta" style="visibility: hidden;">
-                    <img src="./assets/OIP (5).jpg" alt="Chamarra" class="imagen-tarjeta">
-                    <h2>Producto Uno</h2>
-                    <h3>$ 100</h3>
-                    <h3>Chamarra</h3>
-                    <p>Muy flexible, recomendada para cuando hace frio.</p>
-                </div>
-            </div>
-        </div>
-        <div class="lado-carrito" id="id-lado-carrito">
-            <h1>Carrito de compras</h1>
-            <div id="carrito">
-                <div class="icon-mensaje-vacio">
-                    <p>Tu carrito está vacío</p>
-                    <div class="carrito-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24l0 112c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-112c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg>
-                    </div>
-                </div>
-            </div>
-            <div id="totalCarrito">
+            <div class="tarjetas-de-productos" id="listaProductos">    
             </div>
         </div>
     </div>
-    <script src="./carrito.js"></script>
+    <script type="module" src="./index.js"></script>
 </body>
 </html>

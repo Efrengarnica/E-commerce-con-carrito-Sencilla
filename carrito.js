@@ -1,79 +1,69 @@
-const divProductos = document.getElementById("listaProductos");
-const divCarrito = document.getElementById("carrito");
-const totalCarrito = document.getElementById("totalCarrito");
-const divfiltros = document.getElementById("fila-filtros");
-const divLadoCarrito = document.getElementById("id-lado-carrito");
-const inputDiv = document.getElementById("search");
+//Importando el navabar y el footer.
+import { obtenerNavbar } from "./componentes.js";
+import { obtenerFooter } from "./componentes.js";
 
-let productos = null;
-let productosDiccionarioMap = null;
-let carrito = new Map();
-let arregloCategorias = null;
-let productosOrdenadosPorCategoria = new Map();
+//Manipulación del DOM.
+const containerPrincipal = document.getElementById('container-carrito-id');
 
-//Esta función async trae los productos de una Api, los almacena en distintos tipos de datos para nuestra conveniencia y renderiza los primeros valores en la página web.
-async function obtenerProductos() {
-    try {
-      const responseProductos = await fetch('https://fakestoreapi.com/products'); 
-      if (!responseProductos.ok) {
-        throw new Error('Error en la solicitud de productos: ' + responseProductos.status);
-      }
-      productos = await responseProductos.json(); 
-      //Renderiza y regresa los productos ordenados por su id, se guardan en un map().
-      productosDiccionarioMap=renderizarProductos(productos);
-      //Ordena los productos por medio de su categoria y los guarda en un map.
-      ordenarProductosPorCategoria();
+//Inyectando el Navbar y el Footer.
+containerPrincipal.insertAdjacentHTML("afterbegin", obtenerNavbar(false));
+containerPrincipal.insertAdjacentHTML("beforeend", obtenerFooter());
 
-      const responseCategorias = await fetch('https://fakestoreapi.com/products/categories');
-      if(!responseCategorias.ok) {
-        throw new Error('Error en la solicitud de categorías: ' + responseCategorias.status);
-      }
-      arregloCategorias = await responseCategorias.json();
-      //Renderiza los botones de categorías
-      renderizarCategorias(arregloCategorias);
+//La idea es traer las cosas del local storage y presentarlas en mi carrito
+//Tambien la idea es que cada vez que se modifique el local storage mi carrito se modifique.
+//También la idea es que mi carrito se modifique con los botones que le voy a presentar.
 
-    } catch (error) {
-      console.error('Hubo un problema con la petición:', error);
-    }
-}//obtenerProductos
 
-//Pone en marcha la función async
-obtenerProductos(); 
 
-function renderizarCategorias(arreglo) {
-    arreglo.push("all");
-    arreglo.forEach(categoria => {
-        divfiltros.insertAdjacentHTML("beforeend", `  
-                            <button class="categorias" type="button" onClick="presentarProductosAplicandoCategoria(\`${categoria}\`)">${categoria}</button>
-            `)
-    });
-}//renderizarCategorias
 
-function renderizarProductos(arreglo) {
-    const productosDiMap= new Map();
-    arreglo.forEach(element => {
-        const tarjeta = crearTarjeta(element.image, element.title, element.price, element.category, element.id);
-        divProductos.insertAdjacentHTML("afterbegin", tarjeta);
-        productosDiMap.set(element.id, element);
-    });
-    return productosDiMap;
-}//renderizarProductos
 
-function crearTarjeta(imagen, titulo, precio, categoria, id) {
-    const tarjeta = `
-        <div class="tarjeta">
-            <img src=${imagen} alt="${titulo}" class="imagen-tarjeta">
-            <h2 class="titulo-tarjeta">${titulo}</h2>
-            <h3>MXN ${precio}</h3>
-            <h3 class = "categoria-tarjeta">${categoria}</h3>
-            <button type="button" id="${id}" onclick="modificarCarrito(${id})" class="boton-agregar-carrito">Agregar a carrito</button>
-        </div>
-    `
-    return tarjeta;
-}//crearTarjeta
+
+
+
+
+
+/* 
+
+Métodos para manipular el LOCALSTORAGE.
+
+1.localStorage.setItem('tema', 'oscuro');
+
+2.const tema = localStorage.getItem('tema');
+
+3.localStorage.removeItem('tema');
+
+4.localStorage.clear();
+
+5.localStorage.setItem('usuario', JSON.stringify(usuario));
+
+6. const usuarioGuardado = JSON.parse(localStorage.getItem('usuario'));
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Funcion que se ocupará para sumar o restar elementos de mi carrito de compra
-function modificarCarrito(id, operacion = "suma") {
+/* function modificarCarrito(id, operacion = "suma") {
     if(operacion === "suma"){
         if (carrito.has(id)) {
             carrito.get(id).cantidadProducto += 1;
@@ -162,49 +152,6 @@ function renderizarTotalCarrito() {
     }
 }//renderizarTotalCarrito
 
-//Debes de tener cuidado aquí ya que estás usando un arreglo que puede no llegar a existir, deberias de crear la función y que esta reciba un arreglo y después mandarla a llamar
-//Esta función me ayuda a crear un map, que servirá para buscar de manera mas eficiente los productos por su categoria.
-function ordenarProductosPorCategoria(){
-    productos.forEach(producto => {
-        if(productosOrdenadosPorCategoria.has(producto.category)){
-            productosOrdenadosPorCategoria.get(producto.category).push(producto);
-        }else {
-            productosOrdenadosPorCategoria.set(producto.category,[producto]);
-        }
-    });
-}//ordenarProductosPorCategoria
-
-//Mediante una categoria y mi map busco los objetos que tengan esa categoria de manera eficiente.
-function presentarProductosAplicandoCategoria(categoria) {
-    inputDiv.value = "";
-    if(categoria==="all" && divProductos.childElementCount!==(productos.length+1)){
-        divProductos.innerHTML="";
-        const tarjetaRelleno = `
-                <div class="tarjeta" style="visibility: hidden;">
-                    <img src="./assets/OIP (5).jpg" alt="Chamarra" class="imagen-tarjeta">
-                    <h2>Producto Uno</h2>
-                    <h3>$ 100</h3>
-                    <h3>Chamarra</h3>
-                    <p>Muy flexible, recomendada para cuando hace frio.</p>
-                </div>
-        `
-        divProductos.insertAdjacentHTML("afterbegin",tarjetaRelleno);
-        productos.forEach(producto => {
-            const tarjeta = crearTarjeta(producto.image, producto.title, producto.price, producto.category, producto.id);
-            divProductos.insertAdjacentHTML("afterbegin",tarjeta);
-        });
-        return;
-    }
-    const arregloARenderizar = productosOrdenadosPorCategoria.get(categoria);
-    if(arregloARenderizar){
-        divProductos.innerHTML="";
-        arregloARenderizar.forEach(producto => {
-            const tarjeta = crearTarjeta(producto.image, producto.title, producto.price, producto.category, producto.id);
-            divProductos.insertAdjacentHTML("afterbegin",tarjeta);
-        });
-    }
-}//presentarProductosAplicandoCategoria
-
 //Función que ayuda a presentar un mensaje al usuario una vez que confirma su compra
 function realizarCompra() {
     divCarrito.innerHTML="";
@@ -218,37 +165,4 @@ function realizarCompra() {
         </div>
     `
     divCarrito.insertAdjacentHTML("beforeend",compraRealizada);
-}//realizarCompra
-
-//Funcion NO eficiente para crear un buscador, solo se buscan similitudes mediante el title.
-function buscarMedianteBuscador(arregloResultadoBusqueda) {
-    if(arregloResultadoBusqueda.length===0){
-        divProductos.innerHTML="";
-        divProductos.insertAdjacentHTML("afterbegin",`
-            <p class="sinCoincidencias">Sin coincidencias</p>
-            `);
-        return;
-    }
-    divProductos.innerHTML="";
-    const tarjetaRelleno = `
-            <div class="tarjeta" style="visibility: hidden;">
-                <img src="./assets/OIP (5).jpg" alt="Chamarra" class="imagen-tarjeta">
-                <h2>Producto Uno</h2>
-                <h3>$ 100</h3>
-                <h3>Chamarra</h3>
-                <p>Muy flexible, recomendada para cuando hace frio.</p>
-            </div>
-    `
-    divProductos.insertAdjacentHTML("afterbegin",tarjetaRelleno);
-    arregloResultadoBusqueda.forEach(producto => {
-        const tarjeta = crearTarjeta(producto.image, producto.title, producto.price, producto.category, producto.id);
-        divProductos.insertAdjacentHTML("afterbegin",tarjeta);
-    });
-}//buscarMedianteBuscador
-
-//Esto es algo nuevo que aprendí, hay un addEventListener "input" que cada vez que el usuario cambia el valor del input se ejecuta lo que hay dentro.
-inputDiv.addEventListener("input", function(event){
-    const query = event.target.value.toLowerCase();  
-    const resultados = productos.filter(producto => producto.title.toLowerCase().includes(query));
-    buscarMedianteBuscador(resultados);
-    });
+}//realizarCompra */
