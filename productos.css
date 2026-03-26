@@ -193,10 +193,17 @@ p {
     width: 120px;
     height: 40px;
     margin-top: 14px;
+    transition: background-color 0.3s, transform 0.1s;
+    cursor: pointer;
 }
 
 .boton-agregar-carrito:hover {
    background-color: rgba(0, 0, 0,0.7);
+}
+
+.boton-agregar-carrito:active {
+    background-color: rgb(22, 180, 22);
+    transform: scale(0.98);
 }
 
 @media screen and (max-width:1024px) {
@@ -224,8 +231,26 @@ p {
         height: auto;
     }
 
+    .imagen-portada {
+        justify-content: center;
+        align-items: center;
+    }
+
     #search {
         width: 200px;
+    }
+
+    .titulo-imagen {
+        font-size: 20px;
+    }
+
+    .boton-portada{
+        font-size: 15px;
+        height: 20px;
+    }
+
+    #fila-filtros {
+        gap: 20px;
     }
 
 }

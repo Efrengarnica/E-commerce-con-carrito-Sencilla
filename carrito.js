@@ -41,8 +41,8 @@ function cargandoCarrito(){
                     <div class="contenedor-info-de-producto-carrito">
                         <p class="tarjeta-nombre-producto">${localStorageProductos[producto].title}</p>
                         <p class="tarjeta-cantidad-piezas">Piezas: ${localStorageProductos[producto].cantidadProducto}</p>
-                        <p class="tarjeta-precio">El precio unitario es: $ ${localStorageProductos[producto].price}</p>
-                        <p class="tarjeta-total">Total: $ ${localStorageProductos[producto].price*localStorageProductos[producto].cantidadProducto}</p>
+                        <p class="tarjeta-precio">El precio unitario es: $ ${(localStorageProductos[producto].price).toFixed(2)}</p>
+                        <p class="tarjeta-total">Total: $ ${(localStorageProductos[producto].price*localStorageProductos[producto].cantidadProducto).toFixed(2)}</p>
                     </div>
                 </div>
             `;
@@ -94,19 +94,29 @@ function mostrarTotalCarrito(){
     let carroActual = JSON.parse(localStorage.getItem("carritoDeCompras"));
     if(!carroActual){
         resultadoFinal.innerHTML="";
-        resultadoFinal.insertAdjacentHTML("afterbegin", `<p>Total a pagar: $ 0</p>`);
+        resultadoFinal.insertAdjacentHTML("afterbegin", `<p class = "total-a-pagar">Total a pagar: $ 0</p> 
+            <button type="button" class="boton-finalizar-compra" onclick=limpiarLocalStorage()>Finalizar compra</button>`);
         return;
     }
     for(let producto in carroActual){
         total += (carroActual[producto].price)*(carroActual[producto].cantidadProducto) ;
     }
-    let tarjetaTotal= `<p class = "total-a-pagar">Total a pagar: $ ${total}</p>`;
+    let tarjetaTotal= `<p class = "total-a-pagar">Total a pagar: $ ${total.toFixed(2)}</p> 
+        <button type="button" class="boton-finalizar-compra" onclick=limpiarLocalStorage()>Finalizar compra</button>`;
     resultadoFinal.innerHTML="";
     resultadoFinal.insertAdjacentHTML("afterbegin", tarjetaTotal);
 }//mostrarTotalCarrito
+
+//Limpiar carrito del local Storage.
+function limpiarLocalStorage(){
+    localStorage.clear();
+    cargandoCarrito();
+    mostrarTotalCarrito();
+}
 
 //Lo usamos ya que usamos type module en la importación en el html.
 window.agregarAcarrito = agregarAcarrito;
 window.eliminarDeCarrito = eliminarDeCarrito;
 window.disminuirDeCarrito = disminuirDeCarrito;
 window.mostrarTotalCarrito = mostrarTotalCarrito;
+window.limpiarLocalStorage = limpiarLocalStorage;

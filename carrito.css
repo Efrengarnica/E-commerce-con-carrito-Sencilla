@@ -148,3 +148,114 @@ footer {
     font-weight: bold;
     text-align: center;
 }
+
+.boton-finalizar-compra {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    width: 200px;
+    height: 50px;
+    transition: background-color 0.3s, transform 0.1s;
+    cursor: pointer;
+}
+
+.boton-finalizar-compra:hover{
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.boton-finalizar-compra:active {
+    background-color: rgb(22, 180, 22);
+    transform: scale(0.98);
+}
+
+/* Aquí el diseño responsive */
+@media screen and (max-width:1024px) { 
+
+    .carrito {
+        border: 5px solid rgb(0, 0, 0);
+        width: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .productos-en-carrito {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+        height: 160px;
+        border: 1px solid black;
+    }
+
+    .tarjeta-nombre-producto, .tarjeta-cantidad-piezas, .tarjeta-precio, .tarjeta-total {
+        font-size: x-small;
+        margin-top: 0px;
+    }
+
+    .contenedor-info-de-producto-carrito {
+        justify-content: space-around;
+    }
+
+    .resultado-final {
+        border: 5px solid black;
+        height: 100px;
+        width: 500px;
+        gap: 4px;
+    }
+
+    .boton-finalizar-compra {
+        margin-top: 0px;
+    }
+
+    .total-a-pagar {
+        margin-bottom: 0px;
+    }
+
+   .imagen-Tarjeta-Cart {
+        width: 40%;
+    }
+
+    .contenedor-imagen-de-producto-carrito {
+        width: 250px;
+    }
+
+}
+
+@media screen and (max-width:767px) { 
+
+    .carrito {
+        border: 2px solid rgb(0, 0, 0);
+        width: 300px;
+    }
+
+    .resultado-final {
+        border: 2px solid black;
+        height: 100px;
+        width: 300px;
+    }
+
+   .imagen-Tarjeta-Cart {
+        width: 40%;
+    }
+
+    .contenedor-imagen-de-producto-carrito {
+        width: 150px;
+    }
+
+    .boton-finalizar-compra {
+        height: 22px;
+        width: 150px;
+        margin-top: 10px;
+    }
+
+    .contenedor-info-de-producto-carrito {
+        justify-content: center;
+    }
+
+    .tarjeta-nombre-producto, .tarjeta-cantidad-piezas, .tarjeta-precio, .tarjeta-total {
+        font-size: xx-small;
+    }
+
+}
